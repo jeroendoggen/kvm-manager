@@ -39,6 +39,9 @@ See LICENSE file in the distribution for details.
 ## Changelog:
 0.0.1: Basic features
  * Coming soon
+ 
+## Benchmarks:
+ * Create & boot 10 virtual servers (2 GB storage per server): 2 minutes
 
 ## Basic virst commands:
  * virsh --connect qemu:///system list --all
