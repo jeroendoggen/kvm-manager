@@ -14,6 +14,13 @@ Assuming you start from a basic Debian installation
  * Download the source and run ``python setup.py install``.
  * Python Package available in the Python Package Index at: https://pypi.python.org/pypi/kvm_manager/
 
+## Dependencies:
+ * KVM
+ * libvirt
+ * virt-clone
+ *...
+
+ 
 ## Usage:
  * Coming soon
 
@@ -32,3 +39,8 @@ See LICENSE file in the distribution for details.
 ## Changelog:
 0.0.1: Basic features
  * Coming soon
+
+## Basic virst commands:
+ * virsh --connect qemu:///system list --all
+ * virsh --connect qemu:///system start Debian
+ * virsh --connect qemu:///system stop Debian
