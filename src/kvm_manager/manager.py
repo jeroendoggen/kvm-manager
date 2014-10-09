@@ -29,7 +29,8 @@ class KVMManager:
     def run(self):
         """ Run the program (call this from main) """
         #self.start_servers()
-        self.stop_servers()
+        #self.stop_servers()
+        self.delete_servers()
 
     def start_servers(self):
         for x in range(0, self.settings.number_of_servers):
@@ -39,6 +40,11 @@ class KVMManager:
     def stop_servers(self):
         for x in range(0, self.settings.number_of_servers):
             self.stop_server(self.settings.source_image)
+            self.counter = self.counter + 1
+
+    def delete_servers(self):
+        for x in range(0, self.settings.number_of_servers):
+            self.delete_server(self.settings.source_image)
             self.counter = self.counter + 1
 
 
@@ -59,7 +65,13 @@ class KVMManager:
 
     def stop_server(self, servername):
         print("Stopping server: " + str(servername + str(self.counter)))
-        os.system("virsh --connect qemu:///system shutdown clone" + str(self.counter))
+        #os.system("virsh --connect qemu:///system shutdown clone" + str(self.counter))
+        os.system("virsh --connect qemu:///system destroy clone" + str(self.counter))
+
+    def delete_server(self, servername):
+        print("Stopping server: " + str(servername + str(self.counter)))
+        os.system("virsh --connect qemu:///system undefine clone" + str(self.counter))
+        # TODO delete image files (owned by root!)
 
     def clone_server(self, servername):
         print("Cloning server: " + str(servername + str(self.counter)))
