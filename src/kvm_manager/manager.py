@@ -24,12 +24,13 @@ class KVMManager:
         self.reporter = Reporter(self.settings)
         self.setup = Setup(self.settings, self.logger)
         self.errors = 0
-        self.counter = 1
+        self.counter = 0
 
     def run(self):
         #""" Run the program (call this from main) """
         for x in range(0, self.settings.number_of_servers):
             self.setup_server(self.settings.source_image)
+            self.counter = self.counter + 1
 
     def exit_value(self):
         #"""TODO: Generate the exit value for the application."""
@@ -43,12 +44,12 @@ class KVMManager:
         self.start_server(servername)
 
     def start_server(self, servername):
-        print("Starting server: " + str(servername))
-        os.system("virsh --connect qemu:///system start " + servername + "-clone" + str(self.counter))
+        print("Starting server: " + str(servername + str(self.counter)))
+        os.system("virsh --connect qemu:///system start clone" + str(self.counter))
 
     def stop_server(self, servername):
-        print("Stopping server: " + str(servername))
+        print("Stopping server: " + str(servername + str(self.counter)))
 
     def clone_server(self, servername):
-        print("Cloning server: " + str(servername))
-        os.system("virt-clone --connect qemu:///system  --original " + servername + " --auto-clone")
+        print("Cloning server: " + str(servername + str(self.counter)))
+        os.system("virt-clone --connect qemu:///system  --original " + servername + " --name clone" + str(self.counter) + " --auto-clone")
