@@ -8,11 +8,15 @@ from __future__ import print_function, division  # We require Python 2.6+
 
 import os
 import sys
+import SocketServer
+import multiprocessing
+import time
 
 from settings import Settings
 from logger import Logger
 from reporter import Reporter
 from setup import Setup
+from server import UDPHandler
 
 
 class KVMManager:
@@ -25,14 +29,33 @@ class KVMManager:
         self.setup = Setup(self.settings, self.logger)
         self.errors = 0
         self.counter = 0
+        #TODO define in config file
+        self.host = "localhost"
+        self.port = 9999
+        self.server = 0
 
     def run(self):
         """ Run the program (call this from main) """
-        #self.start_servers()
+        self.start_listener()
+        self.setup_servers()
         #self.stop_servers()
-        self.delete_servers()
+        #self.delete_servers()
+        # Wait for servers to boot -> to write the list with IP addresses.
+        time.sleep(600)
 
-    def start_servers(self):
+    def start_listener(self):
+        file = open("../../virtual-servers.html", "w")
+        #file.write("")
+        file.close()
+        self.server = SocketServer.UDPServer((self.host, self.port), UDPHandler)
+        process = multiprocessing.Process(target=self.server.serve_forever)
+        process.daemon = True
+        process.start()
+
+    def handle_reqs(self):
+        self.server.handle_request
+
+    def setup_servers(self):
         for x in range(0, self.settings.number_of_servers):
             self.setup_server(self.settings.source_image)
             self.counter = self.counter + 1
@@ -76,3 +99,6 @@ class KVMManager:
     def clone_server(self, servername):
         print("Cloning server: " + str(servername + str(self.counter)))
         os.system("virt-clone --connect qemu:///system  --original " + servername + " --name clone" + str(self.counter) + " --auto-clone")
+
+    def create_ip_list(self):
+        pass
