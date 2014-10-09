@@ -17,6 +17,7 @@ class Settings:
     Config = ConfigParser.ConfigParser()
     Log = ConfigParser.ConfigParser()
     number_of_servers = 0
+    source_image = 0
 
     parser = argparse.ArgumentParser(
         prog="kvm_manager",
@@ -48,6 +49,8 @@ class Settings:
         try:
             self.Config.read(filename)
             self.number_of_servers = int(self.config_section_map("Config")['number_of_servers'])
+            self.source_image = self.config_section_map("FileNames")['source_image']
+
         except AttributeError:
             #TODO: this does not work!! (AttributeError or KeyError needed? both?)
             print("Error while processing config file")

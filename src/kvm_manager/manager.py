@@ -7,6 +7,7 @@
 from __future__ import print_function, division  # We require Python 2.6+
 
 import os
+import sys
 
 from settings import Settings
 from logger import Logger
@@ -27,7 +28,7 @@ class KVMManager:
     def run(self):
         #""" Run the program (call this from main) """
         for x in range(0, self.settings.number_of_servers):
-            self.setup_server(x)
+            self.setup_server(self.settings.source_image)
 
     def exit_value(self):
         #"""TODO: Generate the exit value for the application."""
@@ -42,6 +43,7 @@ class KVMManager:
 
     def start_server(self, servername):
         print("Starting server: " + str(servername))
+        os.system("sudo virt-clone --original " + servername + "--auto-clone")
 
     def stop_server(self, servername):
         print("Stopping server: " + str(servername))
