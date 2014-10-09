@@ -24,6 +24,7 @@ class KVMManager:
         self.reporter = Reporter(self.settings)
         self.setup = Setup(self.settings, self.logger)
         self.errors = 0
+        self.counter = 1
 
     def run(self):
         #""" Run the program (call this from main) """
@@ -43,10 +44,11 @@ class KVMManager:
 
     def start_server(self, servername):
         print("Starting server: " + str(servername))
-        os.system("sudo virt-clone --original " + servername + "--auto-clone")
+        os.system("virsh --connect qemu:///system start " + servername + "-clone" + str(self.counter))
 
     def stop_server(self, servername):
         print("Stopping server: " + str(servername))
 
     def clone_server(self, servername):
         print("Cloning server: " + str(servername))
+        os.system("virt-clone --connect qemu:///system  --original " + servername + " --auto-clone")
