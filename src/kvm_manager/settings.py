@@ -4,9 +4,17 @@
 """
 
 
-import os
 import ConfigParser
 import argparse
+import sys
+
+
+class Actions:
+    create = False
+    start = False
+    stop = False
+    delete = False
+    destroy = False
 
 
 class Settings:
@@ -18,6 +26,8 @@ class Settings:
     Log = ConfigParser.ConfigParser()
     number_of_servers = 0
     source_image = 0
+    actions = Actions()
+    servers = 0
 
     parser = argparse.ArgumentParser(
         prog="kvm_manager",
@@ -37,7 +47,7 @@ class Settings:
             try:
                 dict1[option] = self.Config.get(section, option)
                 if dict1[option] == -1:
-                    DebugPrint("skip: %s" % option)
+                    print("skip: %s" % option)
             except:
                 print("exception on %s!" % option)
                 dict1[option] = None
@@ -68,6 +78,12 @@ class Settings:
         self.parser.add_argument('-l', metavar='logfile',
           help="Set the name the logfile to use")
 
+        self.parser.add_argument('--create', action='store_true', help='Create the virtual machine clones')
+        self.parser.add_argument('--start', action='store_true', help='Start the virtual machines')
+        self.parser.add_argument('--stop', action='store_true', help='Stop the virtual machines')
+        self.parser.add_argument('--delete', action='store_true', help='Delete the virtual machines')
+        self.parser.add_argument('--destroy', action='store_true', help='Kill the power to the virtual machines')
+
     def get_cli_arguments(self):
         """Read all the cli arguments."""
         args = self.parser.parse_args()
@@ -75,3 +91,14 @@ class Settings:
             self.servers = args.s
         if (args.l is not None):
             self.logfile = args.l
+
+        if (args.create is True):
+            self.actions.create = True
+        if (args.start is True):
+            self.actions.start = True
+        if (args.stop is True):
+            self.actions.stop = True
+        if (args.delete is True):
+            self.actions.delete = True
+        if (args.destroy is True):
+            self.actions.destroy = True
