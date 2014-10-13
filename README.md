@@ -4,7 +4,12 @@ An tool to automate KVM virtual machine management
  * Create clones
  * Show system status
 
-## Install:
+## Screencast
+ <a href="http://www.youtube.com/watch?feature=player_embedded&v=d6rVMrti_zo
+" target="_blank"><img src="http://img.youtube.com/vi/d6rVMrti_zo/0.jpg" 
+alt="Screencast" width="480" height="320" border="10" /></a>
+
+
 Assuming you start from a basic Debian installation
  * ``aptitude install apache2`` (only needed if you want to show a status report on a website)
  * ``aptitude install python-pip`` (the Python Package Index: https://pypi.python.org/pypi)
