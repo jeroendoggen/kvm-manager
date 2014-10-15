@@ -15,6 +15,7 @@ class Actions:
     stop = False
     delete = False
     destroy = False
+    listen = False
 
 
 class Settings:
@@ -83,6 +84,7 @@ class Settings:
         self.parser.add_argument('--stop', action='store_true', help='Stop the virtual machines')
         self.parser.add_argument('--delete', action='store_true', help='Delete the virtual machines')
         self.parser.add_argument('--destroy', action='store_true', help='Kill the power to the virtual machines')
+        self.parser.add_argument('--listen', action='store_true', help='Listen for virtual machines (to detect them after booting')
 
     def get_cli_arguments(self):
         """Read all the cli arguments."""
@@ -102,3 +104,5 @@ class Settings:
             self.actions.delete = True
         if (args.destroy is True):
             self.actions.destroy = True
+        if (args.listen is True):
+            self.actions.listen = True

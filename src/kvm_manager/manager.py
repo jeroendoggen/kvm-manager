@@ -28,7 +28,7 @@ class KVMManager:
         self.errors = 0
         servernumber = 0
         #TODO define in config file
-        self.host = "localhost"
+        self.host = "192.168.1.95"
         self.port = 9999
         self.server = 0
 
@@ -41,7 +41,6 @@ class KVMManager:
         if self.settings.actions.start:
             print("start")
             self.start_servers()
-            self.start_listener()
         if self.settings.actions.stop:
             print("stop")
             self.stop_servers()
@@ -51,6 +50,9 @@ class KVMManager:
         if self.settings.actions.delete:
             print("delete")
             self.delete_servers()
+        if self.settings.actions.listen:
+            print("Start listening for servers:")
+            self.start_listener()
 
     def start_listener(self):
         file = open("../../virtual-servers.html", "w")
@@ -62,7 +64,11 @@ class KVMManager:
         process.start()
         # Wait for servers to boot -> to write the list with IP addresses.
         # TODO implement this nicer
-        time.sleep(60)
+        print("Press ctrl-c to stop")
+        # Keep listening forever
+        while True:
+            time.sleep(1)
+            self.reporter.run()
 
     def handle_reqs(self):
         self.server.handle_request
