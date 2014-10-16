@@ -25,7 +25,8 @@ class Settings:
     config_file = "settings.conf"
     Config = ConfigParser.ConfigParser()
     Log = ConfigParser.ConfigParser()
-    number_of_servers = 0
+    first_server = 0
+    last_server = 0
     source_image = 0
     actions = Actions()
     servers = 0
@@ -59,6 +60,7 @@ class Settings:
         """ Read the config  """
         try:
             self.Config.read(filename)
+            self.first_server = int(self.config_section_map("Config")['first_server'])
             self.number_of_servers = int(self.config_section_map("Config")['number_of_servers'])
             self.source_image = self.config_section_map("FileNames")['source_image']
 

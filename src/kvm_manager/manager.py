@@ -35,6 +35,8 @@ class KVMManager:
     def run(self):
         """ Run the program (call this from main) """
         #
+        self.settings.last_server = self.settings.first_server + self.settings.number_of_servers
+        self.print_info()
         if self.settings.actions.create:
             print("create")
             self.create_servers()
@@ -74,7 +76,7 @@ class KVMManager:
         self.server.handle_request
 
     def create_servers(self):
-        for servernumber in range(0, self.settings.number_of_servers):
+        for servernumber in range(self.settings.first_server, self.settings.last_server):
             self.create_server(self.settings.source_image, servernumber)
 
     def create_server(self, servername, servernumber):
@@ -82,15 +84,17 @@ class KVMManager:
         os.system("virt-clone --connect qemu:///system  --original " + servername + " --name clone" + str(servernumber) + " --auto-clone")
 
     def start_servers(self):
-        for servernumber in range(0, self.settings.number_of_servers):
+        for servernumber in range(self.settings.first_server, self.settings.last_server):
             self.start_server(self.settings.source_image, servernumber)
 
     def start_server(self, servername, servernumber):
         print("Starting server: " + str(servername + str(servernumber)))
+        # TODO: add a variable delay here (might speed up boot time -> avoiding random/parallel reads)
+        time.sleep(0)
         os.system("virsh --connect qemu:///system start clone" + str(servernumber))
 
     def stop_servers(self):
-        for servernumber in range(0, self.settings.number_of_servers):
+        for servernumber in range(self.settings.first_server, self.settings.last_server):
             self.stop_server(self.settings.source_image, servernumber)
 
     def stop_server(self, servername, servernumber):
@@ -99,7 +103,8 @@ class KVMManager:
         #os.system("virsh --connect qemu:///system destroy clone" + str(servernumber))
 
     def delete_servers(self):
-        for servernumber in range(0, self.settings.number_of_servers):
+        # TODO: add a warning here: "are you sure?"
+        for servernumber in range(self.settings.first_server, self.settings.last_server):
             self.delete_server(self.settings.source_image, servernumber)
 
     def delete_server(self, servername, servernumber):
@@ -109,7 +114,7 @@ class KVMManager:
 
     def destroy_servers(self):
         """ The equivalent of ripping the power cord out of the physical machines."""
-        for servernumber in range(0, self.settings.number_of_servers):
+        for servernumber in range(self.settings.first_server, self.settings.last_server):
             self.destroy_server(self.settings.source_image, servernumber)
 
     def destroy_server(self, servername, servernumber):
@@ -122,6 +127,11 @@ class KVMManager:
             return 0
         else:
             return 42
+
+    def print_info(self):
+        print("First server: " + str(self.settings.first_server))
+        print("Number of servers: " + str(self.settings.number_of_servers))
+        print("Last server: " + str(self.settings.last_server))
 
     def create_ip_list(self):
         pass
