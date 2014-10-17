@@ -23,8 +23,9 @@ class UDPHandler(SocketServer.BaseRequestHandler):
     def save_server_info(self, ip_address, hostname, first_time, last_time):
         self.server_list [ip_address] = hostname
         for key in sorted(self.server_list):
+            pass
             #print (key + ":" + self.server_list[key])
-            reporter.update_server_list(self.server_list)
+            #reporter.update_server_list(self.server_list)
 
     def print_server_info(self):
         pass

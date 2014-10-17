@@ -10,6 +10,7 @@ import os
 import SocketServer
 import multiprocessing
 import time
+import math
 
 from settings import Settings
 from logger import Logger
@@ -28,9 +29,11 @@ class KVMManager:
         self.errors = 0
         servernumber = 0
         #TODO define in config file
-        self.host = "192.168.1.95"
+        self.host = "10.22.21.194"
         self.port = 9999
         self.server = 0
+	self.server_state = 256
+        self.running_servers = 0
 
     def run(self):
         """ Run the program (call this from main) """
@@ -70,7 +73,7 @@ class KVMManager:
         # Keep listening forever
         while True:
             time.sleep(1)
-            self.reporter.run()
+            # self.reporter.run()
 
     def handle_reqs(self):
         self.server.handle_request
@@ -88,19 +91,33 @@ class KVMManager:
             self.start_server(self.settings.source_image, servernumber)
 
     def start_server(self, servername, servernumber):
-        print("Starting server: " + str(servername + str(servernumber)))
-        # TODO: add a variable delay here (might speed up boot time -> avoiding random/parallel reads)
-        time.sleep(0)
-        os.system("virsh --connect qemu:///system start clone" + str(servernumber))
+	print("Starting server: " + str(servername + str(servernumber)))
+	self.server_state = os.system("virsh --connect qemu:///system start clone" + str(servernumber))
+        if self.server_state is 256:
+            self.running_servers = self.running_servers + 1
+        servercount = - (self.settings.first_server - servernumber) - self.running_servers + 1
+        # To avoid starving CPU & IO resources (boot time scale approx. like that)(empirical!)
+        if self.server_state is not 256:
+            sleeptime = math.log1p(servercount)# * servercount)# + 3
+            print("Sleeping: " + str(int(sleeptime)))
+            time.sleep(sleeptime)
 
     def stop_servers(self):
         for servernumber in range(self.settings.first_server, self.settings.last_server):
             self.stop_server(self.settings.source_image, servernumber)
-
+            
     def stop_server(self, servername, servernumber):
         print("Stopping server: " + str(servername + str(servernumber)))
-        os.system("virsh --connect qemu:///system shutdown clone" + str(servernumber))
-        #os.system("virsh --connect qemu:///system destroy clone" + str(servernumber))
+        self.server_state = os.system("virsh --connect qemu:///system shutdown clone" + str(servernumber))
+        # To avoid starving CPU & IO resources (boot time scale approx. like that)(empirical!)
+        if self.server_state is 256:
+            self.running_servers = self.running_servers + 1         
+        servercount = - (self.settings.first_server - servernumber) - self.running_servers + 1   
+	if self.server_state is not 256:
+            #sleeptime = math.log(servercount)
+            sleeptime = 1
+            print("Sleeping: " + str(int(sleeptime)))
+            time.sleep(sleeptime)
 
     def delete_servers(self):
         # TODO: add a warning here: "are you sure?"
@@ -135,3 +152,8 @@ class KVMManager:
 
     def create_ip_list(self):
         pass
+
+    def create_server_info(self):
+        """ Print number of running server and other stats"""
+        pass
+        
