@@ -46,7 +46,10 @@ See LICENSE file in the distribution for details.
  * Coming soon
  
 ## Benchmarks:
+Tested on Intel i7 system with 12GB RAM, spinning disk HDD for images, OS on SSD
  * Create & boot 10 virtual servers (2 GB storage per server): 2 minutes
+ * Boot 110 Debian servers (minimal/standard install): 17 minutes 3 seconds
+ * Shutdown 110 Debian servers (minimal/standard install): 2 minutes 14 seconds
 
 ## Basic virst commands:
  * virsh --connect qemu:///system list --all
