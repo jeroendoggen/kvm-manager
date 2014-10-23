@@ -18,6 +18,7 @@ class Reporter():
     def run(self):
         """ Write statistics to files """
         self.write_summary()
+        #pass
 
     def write_summary(self):
         """ Write a summary of the analysis process to a logfile """

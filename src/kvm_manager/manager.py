@@ -11,6 +11,7 @@ import SocketServer
 import multiprocessing
 import time
 import math
+import socket
 
 from settings import Settings
 from logger import Logger
@@ -28,11 +29,11 @@ class KVMManager:
         #self.setup = Setup(self.settings, self.logger)
         self.errors = 0
         servernumber = 0
-        #TODO define in config file
-        self.host = "10.22.21.194"
+        #self.host = socket.gethostbyname(socket.gethostname())
+        self.host = "localhost"
         self.port = 9999
         self.server = 0
-	self.server_state = 256
+        self.server_state = 256
         self.running_servers = 0
 
     def run(self):
@@ -60,6 +61,7 @@ class KVMManager:
             self.start_listener()
 
     def start_listener(self):
+        # TODO move to config file
         file = open("../../virtual-servers.html", "w")
         #file.write("")
         file.close()
@@ -73,7 +75,7 @@ class KVMManager:
         # Keep listening forever
         while True:
             time.sleep(1)
-            # self.reporter.run()
+            #self.reporter.run()
 
     def handle_reqs(self):
         self.server.handle_request
@@ -105,7 +107,7 @@ class KVMManager:
     def stop_servers(self):
         for servernumber in range(self.settings.first_server, self.settings.last_server):
             self.stop_server(self.settings.source_image, servernumber)
-            
+
     def stop_server(self, servername, servernumber):
         print("Stopping server: " + str(servername + str(servernumber)))
         self.server_state = os.system("virsh --connect qemu:///system shutdown clone" + str(servernumber))
@@ -156,4 +158,3 @@ class KVMManager:
     def create_server_info(self):
         """ Print number of running server and other stats"""
         pass
-        
